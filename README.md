@@ -2,6 +2,7 @@
 
 A personal concert log built with the MERN stack. Record every gig you've been to, rate it out of five, keep track of gigs you have tickets for, and see your gig-going history in numbers.
 
+By Adam Devlin
 Data Representation Project 2026, ATU.
 
 ---
