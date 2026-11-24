@@ -3,9 +3,7 @@ import StatTile from '../components/StatTile';
 import YearChart from '../components/YearChart';
 import { fetchAllGigs } from '../api/gigApi';
 import { isUpcomingGig } from '../utils/gigDates';
-import { findMostFrequent, calculateAverageRating, countGigsByYear } from '../utils/gigStats';
-
-const describeTimes = (count) => `${count} ${count === 1 ? 'time' : 'times'}`;
+import { findMostFrequent, describeFavourite, calculateAverageRating, countGigsByYear } from '../utils/gigStats';
 
 function StatsPage() {
   const [gigs, setGigs] = useState([]);
@@ -21,8 +19,8 @@ function StatsPage() {
 
   const pastGigs = gigs.filter((gig) => !isUpcomingGig(gig.date));
   const upcomingCount = gigs.length - pastGigs.length;
-  const topArtist = findMostFrequent(pastGigs.map((gig) => gig.artist));
-  const topVenue = findMostFrequent(pastGigs.map((gig) => gig.venue));
+  const topArtist = pastGigs.length > 0 && describeFavourite(findMostFrequent(pastGigs.map((gig) => gig.artist)));
+  const topVenue = pastGigs.length > 0 && describeFavourite(findMostFrequent(pastGigs.map((gig) => gig.venue)));
   const averageRating = calculateAverageRating(pastGigs);
   const cityCount = new Set(pastGigs.map((gig) => gig.city.toLowerCase())).size;
 
@@ -46,8 +44,8 @@ function StatsPage() {
         <>
           <div className="stat-grid">
             <StatTile label="Gigs attended" value={pastGigs.length} detail={`${upcomingCount} coming up`} />
-            <StatTile label="Most-seen artist" value={topArtist.value} detail={describeTimes(topArtist.count)} />
-            <StatTile label="Favourite venue" value={topVenue.value} detail={describeTimes(topVenue.count)} />
+            <StatTile label="Most-seen artist" value={topArtist.value} detail={topArtist.detail} />
+            <StatTile label="Favourite venue" value={topVenue.value} detail={topVenue.detail} />
             <StatTile
               label="Average rating"
               value={averageRating ? `${averageRating} ★` : '–'}

@@ -5,12 +5,22 @@ const tallyValues = (values) =>
   }, {});
 
 export const findMostFrequent = (values) => {
-  const rankedEntries = Object.entries(tallyValues(values)).sort(
-    (first, second) => second[1] - first[1]
-  );
-  if (rankedEntries.length === 0) return null;
-  const [value, count] = rankedEntries[0];
-  return { value, count };
+  const tallyEntries = Object.entries(tallyValues(values));
+  if (tallyEntries.length === 0) return null;
+  const highestCount = Math.max(...tallyEntries.map(([, count]) => count));
+  const leaders = tallyEntries.filter(([, count]) => count === highestCount).map(([value]) => value);
+  return { leaders, count: highestCount };
+};
+
+export const describeFavourite = (mostFrequent) => {
+  if (mostFrequent.count === 1) {
+    return { value: 'No repeats yet', detail: 'everything seen once so far' };
+  }
+  const times = `${mostFrequent.count} times`;
+  if (mostFrequent.leaders.length === 1) {
+    return { value: mostFrequent.leaders[0], detail: times };
+  }
+  return { value: mostFrequent.leaders.join(' & '), detail: `tied on ${times} each` };
 };
 
 export const calculateAverageRating = (gigs) => {
